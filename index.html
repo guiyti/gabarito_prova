@@ -15,7 +15,6 @@
       width: 100%;
       max-width: 300px;
       margin: 20px auto;
-      display: none;
     }
 
     #inputQRCode {
@@ -32,7 +31,7 @@
     }
   </style>
   <!-- Adicionando a biblioteca html5-qrcode -->
-  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
 
@@ -48,27 +47,33 @@
   <div id="qr-reader"></div>
 
   <script>
-    // Leitura do QR code
-    function onScanSuccess(qrCodeMessage) {
-      // Exibe o QR code no campo de texto
-      document.getElementById('inputQRCode').value = qrCodeMessage;
-      html5QrCodeScanner.clear(); // Para a câmera após capturar o QR code
-      document.getElementById('qr-reader').style.display = "none"; // Esconde o leitor após captura
-    }
+    let qrCodeReader;
 
-    function onScanFailure(error) {
-      console.warn(`QR erro: ${error}`);
-    }
-
-    // Inicializa o leitor de QR code ao clicar no botão
+    // Função que será chamada ao clicar no botão
     document.getElementById('startScan').addEventListener('click', () => {
       const qrReaderElement = document.getElementById('qr-reader');
-      qrReaderElement.style.display = "block"; // Mostra o leitor de QR code
-
-      html5QrCodeScanner = new Html5QrcodeScanner(
-        "qr-reader", { fps: 10, qrbox: { width: 250, height: 250 } });
       
-      html5QrCodeScanner.render(onScanSuccess, onScanFailure);
+      if (!qrCodeReader) {
+        qrCodeReader = new Html5Qrcode("qr-reader");
+      }
+
+      qrCodeReader.start(
+        { facingMode: "environment" }, // Preferencialmente usa a câmera traseira em dispositivos móveis
+        {
+          fps: 10, // Frames por segundo para escaneamento
+          qrbox: 250 // Tamanho da caixa de escaneamento
+        },
+        (decodedText) => {
+          // Quando o QR code é lido com sucesso, insere o valor no input
+          document.getElementById('inputQRCode').value = decodedText;
+          qrCodeReader.stop(); // Para o leitor de QR code
+        },
+        (errorMessage) => {
+          console.log(`Erro de leitura: ${errorMessage}`);
+        }
+      ).catch((err) => {
+        console.error(`Erro ao iniciar a leitura do QR Code: ${err}`);
+      });
     });
   </script>
 
