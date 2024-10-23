@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leitor de QR Code</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+
+    #qr-reader {
+      width: 100%;
+      max-width: 300px;
+      margin: 20px auto;
+      display: none;
+    }
+
+    #inputQRCode {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+  <!-- Adicionando a biblioteca html5-qrcode -->
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+</head>
+<body>
+
+  <h1>Leitor de QR Code</h1>
+  
+  <!-- Botão para abrir a câmera -->
+  <button id="startScan">Ler QR Code</button>
+
+  <!-- Campo de texto para exibir o valor do QR code -->
+  <input type="text" id="inputQRCode" placeholder="Resultado do QR Code" readonly>
+
+  <!-- Div para o leitor de QR code -->
+  <div id="qr-reader"></div>
+
+  <script>
+    // Leitura do QR code
+    function onScanSuccess(qrCodeMessage) {
+      // Exibe o QR code no campo de texto
+      document.getElementById('inputQRCode').value = qrCodeMessage;
+      html5QrCodeScanner.clear(); // Para a câmera após capturar o QR code
+      document.getElementById('qr-reader').style.display = "none"; // Esconde o leitor após captura
+    }
+
+    function onScanFailure(error) {
+      console.warn(`QR erro: ${error}`);
+    }
+
+    // Inicializa o leitor de QR code ao clicar no botão
+    document.getElementById('startScan').addEventListener('click', () => {
+      const qrReaderElement = document.getElementById('qr-reader');
+      qrReaderElement.style.display = "block"; // Mostra o leitor de QR code
+
+      html5QrCodeScanner = new Html5QrcodeScanner(
+        "qr-reader", { fps: 10, qrbox: { width: 250, height: 250 } });
+      
+      html5QrCodeScanner.render(onScanSuccess, onScanFailure);
+    });
+  </script>
+
+</body>
+</html>
