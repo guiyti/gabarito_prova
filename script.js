@@ -82,8 +82,12 @@ function verificarCorrecao() {
     }
   }
 
+
+  // resulado é da quantidade de acertos dividido pelo total de questões vezes 2
+  const resultado = (acertos / numeroDeQuestoes) * 2;
   // Exibe o resultado
   document.getElementById('result').innerHTML = `Você acertou ${acertos} de ${numeroDeQuestoes} questões.`;
+  document.getElementById('nota').innerHTML = `Nota da prova (max:2.00): ${resultado.toFixed(2)}`;
 }
 
 // Adiciona eventos para corrigir automaticamente
