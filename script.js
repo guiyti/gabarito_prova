@@ -89,7 +89,7 @@ function verificarCorrecao() {
   const resultado = (acertos / numeroDeQuestoes) * valorProva;
   // Exibe o resultado
   document.getElementById('result').innerHTML = `Você acertou ${acertos} de ${numeroDeQuestoes} questões.`;
-  document.getElementById('nota').innerHTML = `Nota da prova: ${resultado.toFixed(2)}`;
+  document.getElementById('nota').innerHTML = `Nota obtida: ${resultado.toFixed(2)}`;
 }
 
 // Adiciona eventos para corrigir automaticamente
