@@ -82,12 +82,14 @@ function verificarCorrecao() {
     }
   }
 
+  // Obtém o valor da prova
+  const valorProva = parseFloat(document.getElementById('valorProva').value) || 5;
 
-  // resulado é da quantidade de acertos dividido pelo total de questões vezes 2
-  const resultado = (acertos / numeroDeQuestoes) * 5;
+  // resultado é da quantidade de acertos dividido pelo total de questões vezes o valor da prova
+  const resultado = (acertos / numeroDeQuestoes) * valorProva;
   // Exibe o resultado
   document.getElementById('result').innerHTML = `Você acertou ${acertos} de ${numeroDeQuestoes} questões.`;
-  document.getElementById('nota').innerHTML = `Nota da prova (max:5.00): ${resultado.toFixed(2)}`;
+  document.getElementById('nota').innerHTML = `Nota da prova: ${resultado.toFixed(2)}`;
 }
 
 // Adiciona eventos para corrigir automaticamente
@@ -97,45 +99,57 @@ radios.forEach(radio => {
   console.log('Adicionado evento de correção');
 });
 
+// Adiciona evento para o valor da prova
+document.getElementById('valorProva').addEventListener('input', verificarCorrecao);
+
 // Função para abrir o modal do QR Code
 document.getElementById('qrCodeButton').addEventListener('click', () => {
   const qrModal = document.getElementById('qr-modal');
   qrModal.style.display = 'flex'; // Exibe o modal
   isQrModalOpen = true; // Marca o modal como aberto
 
-  if (!qrCodeReader) {
-    qrCodeReader = new Html5Qrcode("qr-reader");
+  // Sempre criar um novo leitor para evitar problemas
+  qrCodeReader = new Html5Qrcode("qr-reader");
+
+  try {
+    qrCodeReader.start(
+      { facingMode: "environment" }, // Preferencialmente usa a câmera traseira em dispositivos móveis
+      {
+        fps: 10, // Frames por segundo para escaneamento
+        qrbox: 250 // Tamanho da caixa de escaneamento
+      },
+      (decodedText) => {
+        // Quando o QR code é lido com sucesso, insere o valor no input
+        document.getElementById('codigoRespostas').value = decodedText;
+
+        // Esconde o modal e exibe o formulário com as alternativas
+        qrModal.style.display = 'none'; // Fecha o modal
+        isQrModalOpen = false; // Marca o modal como fechado
+        document.getElementById('gabaritoForm').style.display = 'block'; // Mostra o formulário
+        document.getElementById('qrCodeButton').style.display = 'none';
+        verificarCorrecao(); // Chama a função para verificar a correção
+        if (qrCodeReader) {
+          qrCodeReader.stop(); // Para o leitor de QR code
+        }
+      },
+      (errorMessage) => {
+        console.log(`Erro de leitura: ${errorMessage}`);
+      }
+    ).catch((err) => {
+      console.error(`Erro ao iniciar a leitura do QR Code: ${err}`);
+      alert('Erro ao acessar a câmera. Verifique as permissões.');
+    });
+  } catch (e) {
+    console.error('Erro geral na câmera:', e);
+    alert('Erro ao iniciar a câmera.');
   }
-
-  qrCodeReader.start(
-    { facingMode: "environment" }, // Preferencialmente usa a câmera traseira em dispositivos móveis
-    {
-      fps: 10, // Frames por segundo para escaneamento
-      qrbox: 250 // Tamanho da caixa de escaneamento
-    },
-    (decodedText) => {
-      // Quando o QR code é lido com sucesso, insere o valor no input
-      document.getElementById('codigoRespostas').value = decodedText;
-
-      // Esconde o modal e exibe o formulário com as alternativas
-      qrModal.style.display = 'none'; // Fecha o modal
-      isQrModalOpen = false; // Marca o modal como fechado
-      document.getElementById('gabaritoForm').style.display = 'block'; // Mostra o formulário
-      document.getElementById('qrCodeButton').style.display = 'none';
-      verificarCorrecao(); // Chama a função para verificar a correção
-      qrCodeReader.stop(); // Para o leitor de QR code
-    },
-    (errorMessage) => {
-      console.log(`Erro de leitura: ${errorMessage}`);
-    }
-  ).catch((err) => {
-    console.error(`Erro ao iniciar a leitura do QR Code: ${err}`);
-  });
 });
 
 // Função para fechar o modal
 document.getElementById('closeQrModal').addEventListener('click', () => {
-  qrCodeReader.stop(); // Para o leitor de QR code
+  if (qrCodeReader) {
+    qrCodeReader.stop(); // Para o leitor de QR code
+  }
   document.getElementById('qr-modal').style.display = 'none'; // Fecha o modal
   isQrModalOpen = false; // Marca o modal como fechado
 });

@@ -7,8 +7,9 @@ Este projeto consiste em um aplicativo web para ler códigos QR e corrigir gabar
 
 - **Leitura de QR Code**: Utiliza a biblioteca Html5Qrcode para escanear códigos QR com a câmera do dispositivo.
 - **Formulário de Gabarito**: Permite ao usuário selecionar respostas para cada questão em uma tabela.
-- **Correção Automática**: A correção é realizada automaticamente quando o usuário seleciona as respostas.
-- **Resultado Final**: Exibe o número de acertos ao usuário após a seleção das respostas.
+- **Definição do Valor da Prova**: Campo para inserir o valor máximo da prova (ex: 5.00 ou 2.00).
+- **Correção Automática**: A correção é realizada automaticamente quando o usuário seleciona as respostas ou altera o valor da prova.
+- **Resultado Final**: Exibe o número de acertos e a nota calculada baseada no valor da prova.
 
 ## Tecnologias Utilizadas
 
@@ -32,11 +33,23 @@ Este projeto consiste em um aplicativo web para ler códigos QR e corrigir gabar
    cd gabarito_prova
    ```
 
-2. **Abra o arquivo `index.html` em um navegador**.
+2. **Inicie um servidor local** (necessário para acessar a câmera):
 
-3. **Clique no botão para ler o QR Code**. Depois de escanear, preencha as respostas para cada questão.
+   ```bash
+   python3 -m http.server 8000
+   ```
 
-4. **As correções serão feitas automaticamente** e o número de acertos será exibido.
+   Ou use qualquer servidor HTTP local.
+
+3. **Abra o navegador e acesse** `http://localhost:8000/index.html`.
+
+4. **Clique no botão para ler o QR Code**. Permita o acesso à câmera quando solicitado.
+
+5. **Insira o valor da prova no campo correspondente**.
+
+6. **Preencha as respostas para cada questão**.
+
+7. **As correções serão feitas automaticamente** e o número de acertos e a nota serão exibidos.
 
 ## Contribuições
 
