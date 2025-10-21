@@ -42,7 +42,7 @@ body {
   
   input[type="radio"] {
     transform: scale(1.5);
-    margin: 8px 5px;
+    margin: 2px 5px;
   }
   
   button {
