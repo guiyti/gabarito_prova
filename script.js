@@ -83,13 +83,20 @@ function verificarCorrecao() {
   }
 
   // Obtém o valor da prova
-  const valorProva = parseFloat(document.getElementById('valorProva').value) || 5;
+  const valorProvaInput = document.getElementById('valorProva').value.trim();
+  const valorProva = parseFloat(valorProvaInput);
 
   // resultado é da quantidade de acertos dividido pelo total de questões vezes o valor da prova
   const resultado = (acertos / numeroDeQuestoes) * valorProva;
   // Exibe o resultado
   document.getElementById('result').innerHTML = `Você acertou ${acertos} de ${numeroDeQuestoes} questões.`;
-  document.getElementById('nota').innerHTML = `Nota obtida: ${resultado.toFixed(2)}`;
+  
+  // Só exibe a nota se o valor da prova foi informado
+  if (valorProvaInput === '' || isNaN(valorProva) || valorProva <= 0) {
+    document.getElementById('nota').innerHTML = '';
+  } else {
+    document.getElementById('nota').innerHTML = `Nota obtida: ${resultado.toFixed(2)}`;
+  }
 }
 
 // Adiciona eventos para corrigir automaticamente
